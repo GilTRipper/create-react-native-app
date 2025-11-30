@@ -83,6 +83,26 @@ async function createApp(config) {
       }
     }
 
+    // Special handling for app.json to ensure displayName is set correctly
+    const appJsonPath = path.join(projectPath, "app.json");
+    if (await fs.pathExists(appJsonPath)) {
+      let appJsonContent = await fs.readFile(appJsonPath, "utf8");
+      try {
+        const appJson = JSON.parse(appJsonContent);
+        // Ensure displayName is set correctly
+        if (appJson.displayName !== displayName) {
+          appJson.displayName = displayName;
+          appJsonContent = JSON.stringify(appJson, null, 2);
+          await fs.writeFile(appJsonPath, appJsonContent, "utf8");
+        }
+      } catch (error) {
+        // If JSON parsing fails, the replaceInFile should have handled it
+        console.log(
+          chalk.yellow(`Warning: Could not parse app.json: ${error.message}`)
+        );
+      }
+    }
+
     // Add package attribute to AndroidManifest.xml
     const androidManifestPath = path.join(
       projectPath,
