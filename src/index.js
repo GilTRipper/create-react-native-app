@@ -4,7 +4,7 @@ const path = require('path');
 const validateProjectName = require('validate-npm-package-name');
 const { getPrompts } = require('./prompts');
 const { createApp } = require('./template');
-const { checkNodeVersion } = require('./utils');
+const { checkNodeVersion, checkPackageManager } = require("./utils");
 const packageJson = require("../package.json");
 
 async function run() {
@@ -16,11 +16,18 @@ async function run() {
     .version(packageJson.version, "-v, --version", "display version number")
     .argument("[project-name]", "Name of the project")
     .option("--skip-install", "Skip dependency installation")
+    .option("--skip-pods", "Skip iOS CocoaPods installation")
     .option("--skip-git", "Skip git initialization")
+    .option("-y, --yes", "Answer yes to all prompts")
     .option(
       "-p, --package-manager <manager>",
       "Package manager to use (npm, yarn, pnpm)"
     )
+    .option(
+      "-b, --bundle-id <bundleId>",
+      "Bundle identifier (e.g., com.company.app)"
+    )
+    .option("-d, --display-name <displayName>", "App display name")
     .action(async (projectName, options) => {
       try {
         // Check Node version
@@ -28,6 +35,13 @@ async function run() {
 
         // Get project configuration
         const config = await getPrompts(projectName, options);
+
+        // Check if package manager is installed
+        if (!config.skipInstall) {
+          if (!checkPackageManager(config.packageManager)) {
+            process.exit(1);
+          }
+        }
 
         // Validate project name
         const validation = validateProjectName(config.projectName);
@@ -43,25 +57,41 @@ async function run() {
         await createApp(config);
 
         // Success message
-        console.log(chalk.green.bold("\n✅ Project created successfully!\n"));
-        console.log(chalk.cyan("Next steps:\n"));
-        console.log(`  cd ${config.projectName}`);
+        console.log(chalk.green.bold("\n" + "=".repeat(50)));
+        console.log(chalk.green.bold("✅ Project created successfully!"));
+        console.log(chalk.green.bold("=".repeat(50) + "\n"));
+
+        console.log(chalk.cyan.bold("📂 Next steps:\n"));
+        console.log(chalk.white(`  cd ${config.projectName}`));
 
         if (config.skipInstall) {
-          console.log(`  ${config.packageManager} install`);
+          console.log(chalk.white(`  ${config.packageManager} install`));
+          if (process.platform === "darwin") {
+            console.log(chalk.white(`  cd ios && pod install`));
+          }
         }
 
-        console.log(chalk.yellow("\n📱 Setup Firebase:"));
-        console.log("  1. Add google-services.json to android/app/");
-        console.log("  2. Add GoogleService-Info.plist to ios/");
+        console.log(chalk.yellow.bold("\n📱 Setup Firebase:"));
+        console.log(
+          chalk.white("  1. Add google-services.json to android/app/")
+        );
+        console.log(chalk.white("  2. Add GoogleService-Info.plist to ios/"));
 
-        console.log(chalk.yellow("\n🗺️  Setup Google Maps:"));
-        console.log("  1. Add GOOGLE_MAPS_API_KEY to android/local.properties");
-        console.log("  2. Add Google Maps API key to ios/");
+        console.log(chalk.yellow.bold("\n🗺️  Setup Google Maps:"));
+        console.log(
+          chalk.white(
+            "  1. Add GOOGLE_MAPS_API_KEY to android/local.properties"
+          )
+        );
+        console.log(chalk.white("  2. Add Google Maps API key to ios/"));
 
-        console.log(chalk.cyan("\n🏃 Run the app:\n"));
-        console.log(`  ${config.packageManager} run ios`);
-        console.log(`  ${config.packageManager} run android\n`);
+        console.log(chalk.cyan.bold("\n🏃 Run the app:\n"));
+        console.log(chalk.white(`  ${config.packageManager} run ios`));
+        console.log(chalk.white(`  ${config.packageManager} run android`));
+
+        console.log(
+          chalk.gray("\n📚 For more info, check SETUP.md in your project\n")
+        );
       } catch (error) {
         console.error(chalk.red("\n❌ Error creating project:"), error.message);
         process.exit(1);

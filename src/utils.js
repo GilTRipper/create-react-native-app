@@ -15,6 +15,29 @@ function checkNodeVersion() {
   }
 }
 
+function checkPackageManager(packageManager) {
+  try {
+    const { execSync } = require('child_process');
+    execSync(`${packageManager} --version`, { stdio: 'ignore' });
+    return true;
+  } catch (error) {
+    console.error(
+      chalk.red(`\n❌ Error: ${packageManager} is not installed.`),
+      chalk.yellow(`\nPlease install ${packageManager} first:`)
+    );
+    
+    if (packageManager === 'pnpm') {
+      console.log(chalk.cyan('  npm install -g pnpm'));
+      console.log(chalk.gray('  or visit: https://pnpm.io/installation'));
+    } else if (packageManager === 'yarn') {
+      console.log(chalk.cyan('  npm install -g yarn'));
+      console.log(chalk.gray('  or visit: https://yarnpkg.com/getting-started/install'));
+    }
+    console.log('');
+    return false;
+  }
+}
+
 async function replaceInFile(filePath, replacements) {
   try {
     let content = await fs.readFile(filePath, 'utf8');
@@ -54,6 +77,7 @@ async function replaceInFilesRecursively(dirPath, replacements, extensions = ['.
 
 module.exports = {
   checkNodeVersion,
+  checkPackageManager,
   replaceInFile,
   replaceInFilesRecursively
 };
