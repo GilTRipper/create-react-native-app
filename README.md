@@ -42,7 +42,7 @@ npx @giltripper/create-rn-app MyApp --package-manager pnpm --skip-install
 - `[project-name]` - Name of your project (optional, will prompt if not provided)
 - `--skip-install` - Skip dependency installation
 - `--skip-git` - Skip git initialization
-- `-p, --package-manager <manager>` - Package manager to use: npm, yarn, or pnpm (default: pnpm)
+- `-p, --package-manager <manager>` - Package manager to use: npm, yarn, or pnpm (will prompt if not specified)
 
 ## What's Included
 

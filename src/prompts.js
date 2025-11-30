@@ -96,10 +96,10 @@ async function getPrompts(projectNameArg, options) {
     projectName: projectNameArg || answers.projectName,
     bundleIdentifier: answers.bundleIdentifier,
     displayName: answers.displayName,
-    packageManager: options.packageManager || answers.packageManager,
+    packageManager: options.packageManager || answers.packageManager || "pnpm",
     skipInstall: options.skipInstall || !answers.installDependencies,
     skipGit: options.skipGit || false,
-    projectPath
+    projectPath,
   };
 }
 

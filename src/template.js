@@ -110,29 +110,40 @@ async function createApp(config) {
   // Step 3: Install dependencies
   if (!skipInstall) {
     const installSpinner = ora(`Installing dependencies with ${packageManager}...`).start();
+    installSpinner.stop(); // Stop spinner to show install output
+    console.log(
+      chalk.cyan(`\n📦 Installing dependencies with ${packageManager}...\n`)
+    );
+
     try {
-      await execa(packageManager, ['install'], {
+      await execa(packageManager, ["install"], {
         cwd: projectPath,
-        stdio: 'inherit'
+        stdio: "inherit",
       });
-      installSpinner.succeed('Dependencies installed');
+      console.log(chalk.green("\n✅ Dependencies installed\n"));
     } catch (error) {
-      installSpinner.fail('Failed to install dependencies');
-      console.log(chalk.yellow('You can install them manually later with:'), `${packageManager} install`);
+      console.log(chalk.red("\n❌ Failed to install dependencies"));
+      console.log(
+        chalk.yellow("You can install them manually later with:"),
+        `${packageManager} install\n`
+      );
     }
 
     // Install pods for iOS
-    if (process.platform === 'darwin') {
-      const podSpinner = ora('Installing iOS pods...').start();
+    if (process.platform === "darwin") {
+      console.log(chalk.cyan("📦 Installing iOS pods...\n"));
       try {
-        await execa('pod', ['install'], {
-          cwd: path.join(projectPath, 'ios'),
-          stdio: 'inherit'
+        await execa("pod", ["install"], {
+          cwd: path.join(projectPath, "ios"),
+          stdio: "inherit",
         });
-        podSpinner.succeed('iOS pods installed');
+        console.log(chalk.green("\n✅ iOS pods installed\n"));
       } catch (error) {
-        podSpinner.fail('Failed to install pods');
-        console.log(chalk.yellow('You can install them manually later with:'), 'cd ios && pod install');
+        console.log(chalk.red("\n❌ Failed to install pods"));
+        console.log(
+          chalk.yellow("You can install them manually later with:"),
+          "cd ios && pod install\n"
+        );
       }
     }
   }

@@ -19,8 +19,7 @@ async function run() {
     .option("--skip-git", "Skip git initialization")
     .option(
       "-p, --package-manager <manager>",
-      "Package manager to use (npm, yarn, pnpm)",
-      "pnpm"
+      "Package manager to use (npm, yarn, pnpm)"
     )
     .action(async (projectName, options) => {
       try {
