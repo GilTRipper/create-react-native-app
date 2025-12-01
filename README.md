@@ -104,110 +104,18 @@ npx @giltripper/create-rn-app MyApp -p yarn
 
 ## What's Included
 
-### 🧭 Navigation
-- React Navigation v7 with Stack and Drawer
-- Pre-configured navigation structure
+The generated project includes a production-ready React Native app with:
 
-### 📦 State Management
-- Zustand for global state
-- TanStack Query for server state
-- MMKV for persistent storage
+- 🧭 React Navigation v7 with Stack and Drawer
+- 📦 Zustand for state management, TanStack Query for server state
+- 🔥 Firebase (Analytics, Messaging, Remote Config)
+- 🗺️ Google Maps integration
+- 🎨 Modern UI components (Bottom Sheet, Toast, Blur View, etc.)
+- 📱 Native features (Push Notifications, Geolocation, Permissions, etc.)
+- 🛠️ TypeScript, ESLint, Prettier, and development tools
+- ⚡ Performance optimizations (Hermes, Reanimated, optimized images)
 
-### 🔥 Firebase Integration
-- Analytics
-- Cloud Messaging (Push Notifications)
-- Remote Config
-- Pre-configured setup files
-
-### 🗺️ Google Maps
-- React Native Maps
-- Ready-to-use map components
-- API key configuration
-
-### 🎨 UI Components
-- Bottom Sheet (@gorhom/bottom-sheet)
-- Toast Messages
-- Blur View
-- Fast Image
-- Custom fonts (Golos Text, Tajawal, Urbanist)
-
-### 📱 Native Features
-- Push Notifications (Notifee)
-- Geolocation
-- Network Info
-- Device Info
-- Haptic Feedback
-- Permissions
-- Image Picker
-- Date Picker
-
-### 🛠️ Development Tools
-- TypeScript
-- ESLint with custom rules
-- Prettier
-- Custom scripts for icons and modules
-- Reactotron for debugging
-
-### ⚡ Performance
-- Hermes Engine
-- React Native Reanimated
-- Optimized images (AVIF, WebP, SVG support)
-- Splash Screen (react-native-bootsplash)
-
-## After Creation
-
-### 1. Setup Firebase
-
-Add Firebase configuration files:
-- **Android**: Place `google-services.json` in `android/app/`
-- **iOS**: Place `GoogleService-Info.plist` in `ios/`
-
-### 2. Setup Google Maps
-
-Add Google Maps API keys:
-- **Android**: Add `GOOGLE_MAPS_API_KEY=your_key` to `android/local.properties`
-- **iOS**: Add your API key to `ios/YourApp/Info.plist`
-
-### 3. Install dependencies (if skipped)
-
-```bash
-cd MyAwesomeApp
-
-# With npm
-npm install
-
-# With yarn
-yarn install
-
-# With pnpm
-pnpm install
-```
-
-### 4. Install iOS pods
-
-```bash
-cd ios
-pod install
-cd ..
-```
-
-### 5. Run the app
-
-```bash
-# iOS
-npm run ios
-# or
-yarn ios
-# or
-pnpm ios
-
-# Android
-npm run android
-# or
-yarn android
-# or
-pnpm android
-```
+**For detailed information about the generated project, see the [Template README](./template/README.md)**
 
 ## Requirements
 
@@ -233,90 +141,6 @@ npx @giltripper/create-rn-app MyApp \
 
 When using `--yes`, all prompts are automatically answered with default values, and you can provide all configuration via CLI flags.
 
-## Project Structure
-
-```
-MyAwesomeApp/
-├── android/              # Android native code
-├── ios/                  # iOS native code
-├── src/                  # Your React Native code
-│   ├── components/       # Reusable components
-│   ├── screens/          # Screen components
-│   ├── navigation/       # Navigation setup
-│   ├── services/         # API and services
-│   └── utils/            # Utility functions
-├── assets/               # Images, fonts, icons
-├── App.tsx               # Root component
-├── package.json
-└── tsconfig.json
-```
-
-## Available Scripts
-
-After creating your project, you can run:
-
-```bash
-# Start Metro bundler
-npm start
-
-# Run on iOS
-npm run ios
-
-# Run on Android
-npm run android
-
-# Run tests
-npm test
-
-# Lint code
-npm run lint
-
-# Generate icons
-npm run generate:icons
-
-# Create new module
-npm run generate:module
-```
-
-## Customization
-
-### Fonts
-The template includes custom fonts. You can add more in `assets/fonts/` and link them using:
-```bash
-npx react-native-asset
-```
-
-### Icons
-Place your icons in `assets/icons/` and run:
-```bash
-npm run generate:icons
-```
-
-### Colors & Theme
-Customize your theme in `src/theme/` or your preferred location.
-
-## Troubleshooting
-
-### iOS build fails
-```bash
-cd ios
-pod deintegrate
-pod install
-cd ..
-```
-
-### Metro bundler issues
-```bash
-npm start -- --reset-cache
-```
-
-### Android build fails
-```bash
-cd android
-./gradlew clean
-cd ..
-```
-
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
@@ -325,9 +149,14 @@ For major changes, please open an issue first to discuss what you would like to 
 
 ## Documentation
 
+### For Users
+- 📱 [Template README](./template/README.md) - Complete guide for the generated React Native project
+- 📝 [Changelog](./CHANGELOG.md) - Version history and changes
+
+### For Contributors
 - 📚 [Development Guide](./DEVELOPMENT.md) - For contributors and local development
+- 🧪 [Tests README](./tests/README.md) - E2E testing guide
 - 🚀 [Release Guide](./RELEASE.md) - For maintainers publishing to npm
-- 📝 [Changelog](./CHANGELOG.md) - Version history
 
 ## License
 
