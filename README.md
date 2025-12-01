@@ -37,12 +37,70 @@ npx @giltripper/create-rn-app
 npx @giltripper/create-rn-app MyApp --package-manager pnpm --skip-install
 ```
 
+### Non-interactive mode (CI/CD)
+
+```bash
+npx @giltripper/create-rn-app MyApp \
+  --package-manager pnpm \
+  --bundle-id com.company.myapp \
+  --display-name "My App" \
+  --skip-git \
+  --yes
+```
+
 ## Options
 
+### Basic Options
+
 - `[project-name]` - Name of your project (optional, will prompt if not provided)
+- `-v, --version` - Display version number
+- `-y, --yes` - Answer yes to all prompts (non-interactive mode)
+
+### Package Manager
+
+- `-p, --package-manager <manager>` - Package manager to use: `npm`, `yarn`, or `pnpm` (will prompt if not specified)
+
+### Project Configuration
+
+- `-b, --bundle-id <bundleId>` - Bundle identifier (e.g., `com.company.app`). If not provided, will prompt or use default based on project name.
+- `-d, --display-name <displayName>` - App display name. If not provided, will prompt or use project name.
+
+### Installation Options
+
 - `--skip-install` - Skip dependency installation
+- `--skip-pods` - Skip iOS CocoaPods installation
 - `--skip-git` - Skip git initialization
-- `-p, --package-manager <manager>` - Package manager to use: npm, yarn, or pnpm (will prompt if not specified)
+
+## Examples
+
+### Quick start with prompts
+
+```bash
+npx @giltripper/create-rn-app MyApp
+```
+
+### Full non-interactive setup
+
+```bash
+npx @giltripper/create-rn-app MyApp \
+  -p pnpm \
+  -b com.mycompany.myapp \
+  -d "My Awesome App" \
+  --skip-git \
+  --yes
+```
+
+### Create project without installing dependencies
+
+```bash
+npx @giltripper/create-rn-app MyApp --skip-install
+```
+
+### Create project with specific package manager
+
+```bash
+npx @giltripper/create-rn-app MyApp -p yarn
+```
 
 ## What's Included
 
@@ -159,6 +217,21 @@ pnpm android
   - For Android: Android Studio, JDK
 
 See [React Native Environment Setup](https://reactnative.dev/docs/environment-setup) for detailed instructions.
+
+## Non-Interactive Mode
+
+The CLI supports fully non-interactive mode using the `--yes` flag, making it perfect for CI/CD pipelines and automation:
+
+```bash
+npx @giltripper/create-rn-app MyApp \
+  --package-manager pnpm \
+  --bundle-id com.company.myapp \
+  --display-name "My App" \
+  --skip-git \
+  --yes
+```
+
+When using `--yes`, all prompts are automatically answered with default values, and you can provide all configuration via CLI flags.
 
 ## Project Structure
 
