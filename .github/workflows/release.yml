@@ -1,0 +1,71 @@
+name: Create Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Extract version from tag
+        id: tag_version
+        run: |
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+          echo "tag_name=$TAG_NAME" >> $GITHUB_OUTPUT
+          VERSION=${TAG_NAME#v}
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Extract changelog entry
+        id: changelog
+        run: |
+          VERSION="${{ steps.tag_version.outputs.version }}"
+
+          # Extract changelog entry for this version
+          # Look for the version section and extract until next version or end
+          awk '
+            /^## \['"$VERSION"'\]/ {found=1; next}
+            /^## \[/ && found {exit}
+            found {print}
+          ' CHANGELOG.md > /tmp/changelog_entry.md || true
+
+          # If no entry found, try with v prefix
+          if [ ! -s /tmp/changelog_entry.md ]; then
+            awk '
+              /^## \['"v$VERSION"'\]/ {found=1; next}
+              /^## \[/ && found {exit}
+              found {print}
+            ' CHANGELOG.md > /tmp/changelog_entry.md || true
+          fi
+
+          # Read the changelog entry
+          if [ -s /tmp/changelog_entry.md ]; then
+            CHANGELOG_BODY=$(cat /tmp/changelog_entry.md)
+            # Escape for GitHub Actions
+            {
+              echo 'changelog<<EOF'
+              echo "$CHANGELOG_BODY"
+              echo 'EOF'
+            } >> $GITHUB_OUTPUT
+          else
+            echo "changelog=Release ${{ steps.tag_version.outputs.tag_name }}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.tag_version.outputs.tag_name }}
+          name: Release ${{ steps.tag_version.outputs.tag_name }}
+          body: ${{ steps.changelog.outputs.changelog }}
+          draft: false
+          prerelease: false

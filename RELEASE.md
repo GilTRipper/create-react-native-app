@@ -18,10 +18,12 @@ Complete guide for publishing `create-rn-app` to npm via automated GitHub Action
 **TL;DR** - If you're already set up:
 
 ```bash
-npm version patch && git push --follow-tags && gh release create $(git describe --tags --abbrev=0) --generate-notes
+npm version patch && git push --follow-tags
 ```
 
-That's it! GitHub Actions will automatically publish to npm. ✨
+That's it! GitHub Actions will automatically:
+1. Create GitHub Release with CHANGELOG.md content ✨
+2. Publish to npm ✨
 
 ---
 
@@ -110,17 +112,21 @@ Follow these steps for each release.
 ### Standard Release (Recommended)
 
 ```bash
-# 1. Update version
+# 1. Update CHANGELOG.md with release notes for the new version
+# Edit CHANGELOG.md and add entry for the new version
+
+# 2. Update version (this creates a commit and tag)
 npm version patch  # or minor, or major
 
-# 2. Push with tags
+# 3. Push with tags
 git push origin main --follow-tags
 
-# 3. Create GitHub release
-gh release create $(git describe --tags --abbrev=0) --generate-notes
-
-# 4. Wait for GitHub Actions to publish automatically! ✨
+# 4. Wait for GitHub Actions to:
+#    - Automatically create GitHub Release with CHANGELOG.md content ✨
+#    - Automatically publish to npm ✨
 ```
+
+**Note**: The release workflow automatically extracts the changelog entry for the version from `CHANGELOG.md` and uses it as release notes.
 
 ### Detailed Step-by-Step
 
@@ -144,7 +150,9 @@ This command will:
 - Create a git commit
 - Create a git tag
 
-#### 2. Update CHANGELOG (Optional but Recommended)
+#### 2. Update CHANGELOG (Required)
+
+**Important**: Update `CHANGELOG.md` BEFORE running `npm version`, as the release workflow automatically extracts the changelog entry for the version.
 
 Add release notes to `CHANGELOG.md`:
 
@@ -161,12 +169,7 @@ Add release notes to `CHANGELOG.md`:
 - Improvement Z
 ```
 
-Then amend the version commit:
-
-```bash
-git add CHANGELOG.md
-git commit --amend --no-edit
-```
+The release workflow will automatically use this entry as the GitHub Release notes.
 
 #### 3. Push Changes
 
@@ -176,40 +179,38 @@ git push origin main --follow-tags
 
 The `--follow-tags` flag pushes both the commit and the version tag.
 
-#### 4. Create GitHub Release
+#### 4. GitHub Release (Automatic)
 
-**Option A: GitHub CLI (Recommended)**
+**The release is created automatically** when you push the tag! 🎉
+
+The `.github/workflows/release.yml` workflow:
+- Triggers on tag push (e.g., `v1.0.1`)
+- Extracts the changelog entry from `CHANGELOG.md` for that version
+- Creates a GitHub Release with the changelog content as release notes
+- No manual steps required!
+
+**Manual Override** (if needed):
+
+If you need to create a release manually:
 
 ```bash
-# Auto-generate release notes
+# Using GitHub CLI
 gh release create v1.0.1 --generate-notes
 
 # Or with custom notes
 gh release create v1.0.1 \
   --title "v1.0.1" \
   --notes "Bug fixes and improvements"
-
-# From CHANGELOG
-gh release create v1.0.1 \
-  --title "Release v1.0.1" \
-  --notes "$(git log --pretty=format:"- %s" $(git describe --tags --abbrev=0 HEAD^)..HEAD)"
 ```
-
-**Option B: GitHub Web Interface**
-
-1. Go to https://github.com/GilTRipper/create-rn-app/releases
-2. Click **"Draft a new release"**
-3. Click **"Choose a tag"** and select the version (e.g., `v1.0.1`)
-4. Title: `v1.0.1` or `Release 1.0.1`
-5. Description: Add release notes
-6. Click **"Publish release"** (NOT "Save draft")
 
 #### 5. Monitor GitHub Actions
 
 1. Go to **Actions** tab in your repository
-2. Find the **"Publish to npm"** workflow
-3. Wait for completion (usually 1-2 minutes)
-4. Green checkmark ✅ = Success!
+2. You should see two workflows:
+   - **"Create Release"** - Creates GitHub Release with CHANGELOG.md
+   - **"Publish to npm"** - Publishes to npm (triggers when release is published)
+3. Wait for completion (usually 2-3 minutes total)
+4. Green checkmarks ✅ = Success!
 
 #### 6. Verify Publication
 
@@ -426,6 +427,20 @@ gh auth login
 
 ## Workflow Details
 
+### Automated Release Workflow
+
+File: `.github/workflows/release.yml`
+
+**Triggers**: When a tag is pushed (e.g., `v1.0.1`)
+
+**Steps**:
+1. Checkout code
+2. Extract version from tag
+3. Extract changelog entry from `CHANGELOG.md` for that version
+4. Create GitHub Release with changelog content as release notes
+
+**Result**: GitHub Release is automatically created with content from `CHANGELOG.md`
+
 ### Automated Publishing Workflow
 
 File: `.github/workflows/publish.yml`
@@ -440,6 +455,8 @@ File: `.github/workflows/publish.yml`
 
 **Environment Variables**:
 - `NODE_AUTH_TOKEN`: Uses `secrets.NPM_TOKEN`
+
+**Note**: This workflow runs automatically after the release workflow creates a GitHub Release.
 
 ### CI Testing Workflow
 
