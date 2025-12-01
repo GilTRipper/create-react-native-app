@@ -3,7 +3,7 @@ const path = require('path');
 const chalk = require('chalk');
 const ora = require('ora');
 const execa = require("execa");
-const { replaceInFile, replaceInFilesRecursively } = require("./utils");
+const { replaceInFile } = require("./utils");
 
 async function createApp(config) {
   const {
