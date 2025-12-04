@@ -208,9 +208,17 @@ gh release create v1.0.1 \
 1. Go to **Actions** tab in your repository
 2. You should see two workflows:
    - **"Create Release"** - Creates GitHub Release with CHANGELOG.md
-   - **"Publish to npm"** - Publishes to npm (triggers when release is published)
+   - **"Publish to npm"** - Publishes to npm (triggers when release is published or tag is pushed)
 3. Wait for completion (usually 2-3 minutes total)
 4. Green checkmarks ✅ = Success!
+
+**If publish workflow didn't run automatically:**
+
+You can trigger it manually:
+1. Go to **Actions** → **"Publish to npm"**
+2. Click **"Run workflow"**
+3. Enter the tag name (e.g., `v1.0.2`)
+4. Click **"Run workflow"**
 
 #### 6. Verify Publication
 
